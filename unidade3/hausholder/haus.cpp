@@ -1,0 +1,173 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <iomanip>
+
+using namespace std;
+
+// Tipo para matrizes e vetores
+typedef vector<vector<double>> Matrix;
+typedef vector<double> Vector;
+
+// Função para calcular a norma de um vetor
+double norma(const Vector& v) {
+    double sum = 0.0;
+    for (double val : v) {
+        sum += val * val;
+    }
+    return sqrt(sum);
+}
+
+// Função para normalizar um vetor
+Vector normalize(const Vector& v) {
+    double norm = norma(v);
+    Vector normalized(v.size());
+    if (norm != 0) {
+        for (int i = 0; i < v.size(); i++) {
+            normalized[i] = v[i] / norm;
+        }
+    }
+    return normalized;
+}
+
+// Função para criar matriz identidade
+Matrix identidade(int n) {
+    Matrix I(n, Vector(n, 0.0));
+    for (int i = 0; i < n; i++) {
+        I[i][i] = 1.0;
+    }
+    return I;
+}
+
+// Função para multiplicar matrizes
+Matrix multiplicarMatrizes(const Matrix& A, const Matrix& B) {
+    int n = A.size();
+    int m = B[0].size();
+    int p = B.size();
+    
+    Matrix C(n, Vector(m, 0.0));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            for (int k = 0; k < p; k++) {
+                C[i][j] += A[i][k] * B[k][j];
+            }
+        }
+    }
+    return C;
+}
+
+// Função para transpor uma matriz
+Matrix transpor(const Matrix& A) {
+    int n = A.size();
+    int m = A[0].size();
+    Matrix At(m, Vector(n));
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            At[j][i] = A[i][j];
+        }
+    }
+    return At;
+}
+
+// Função para criar matriz de Householder H(j)
+Matrix hausholder(const Matrix& A, int j, int n) {
+    // Criar vetor v inicializado com zeros
+    Vector v(n, 0.0);
+    Vector v_linha(n, 0.0);
+    
+    // v((j+1):n) <- A((j+1):n , j)
+    for (int i = j + 1; i < n; i++) {
+        v[i] = A[i][j];
+    }
+    
+    // Lv <- norma(v)
+    double Lv = norma(v);
+    
+    // v'(j+1) <- Lv
+    v_linha[j + 1] = Lv;
+    
+    // N <- v - v'
+    Vector N(n);
+    for (int i = 0; i < n; i++) {
+        N[i] = v[i] - v_linha[i];
+    }
+    
+    // n <- normalize(N)
+    Vector n_normalizado = normalize(N);
+    
+    // Construir matriz de Householder H = I - 2*n*n^T
+    Matrix H = identidade(n);
+    
+    for (int i = 0; i < n; i++) {
+        for (int k = 0; k < n; k++) {
+            H[i][k] -= 2.0 * n_normalizado[i] * n_normalizado[k];
+        }
+    }
+    
+    return H;
+}
+
+// Função principal para múltiplas transformações de Householder
+pair<Matrix, Matrix> mhausholder(Matrix A, int n) {
+    Matrix H = identidade(n);
+    
+    // loop (j = 1:(n-2))
+    for (int j = 1; j <= n - 2; j++) {
+        // H(j) <- hausholder(A,j,n)
+        Matrix Hj = hausholder(A, j, n);
+        
+        // A <- H(j)^T * A * H(j)
+        Matrix HjT = transpor(Hj);
+        Matrix temp = multiplicarMatrizes(HjT, A);
+        A = multiplicarMatrizes(temp, Hj);
+        
+        // H <- H * H(j)
+        H = multiplicarMatrizes(H, Hj);
+    }
+    
+    return make_pair(A, H);
+}
+
+// Função para imprimir uma matriz
+void imprimirMatriz(const Matrix& mat, const string& nome) {
+    cout << nome << ":" << endl;
+    for (const auto& linha : mat) {
+        for (double val : linha) {
+            cout << setw(10) << setprecision(4) << fixed << val << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+int main() {
+    // Exemplo de uso
+    int n;
+    cout << "Digite o tamanho da matriz: ";
+    cin >> n;
+    
+    Matrix A(n, Vector(n));
+    
+    cout << "Digite os elementos da matriz A:" << endl;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << "A[" << i << "][" << j << "]: ";
+            cin >> A[i][j];
+        }
+    }
+    
+    cout << "\nMatriz original:" << endl;
+    imprimirMatriz(A, "A");
+    
+    // Aplicar transformações de Householder
+    pair<Matrix, Matrix> resultado = mhausholder(A, n);
+    Matrix T = resultado.first;  // Matriz tridiagonalizada
+    Matrix H = resultado.second; // Matriz de transformação acumulada
+    
+    cout << "Resultado das transformações de Householder:" << endl;
+    imprimirMatriz(T, "Matriz Tridiagonalizada (T)");
+    imprimirMatriz(H, "Matriz de Transformação (H)");
+    
+    return 0;
+}

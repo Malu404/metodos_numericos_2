@@ -1,0 +1,20 @@
+~H(j) <- hausholder(~A,j,n)
+    {
+        ^v  <- ^0
+        ^v' <- ^0
+        ^v((j+1):n) <- A((j+1):n , j)
+            L^v <- norma(^v)
+            ^v'(j+1) <- L^v
+            ^N <- ^v - ^v'
+            ^n <- normalize(^N)
+    }
+
+(~T,~H) <- mhausholder(~A,n)
+    ~H <- ~I
+    loop (j = 1:(n-2)){
+        H(j) <- hausholder(~A,j,n)
+        ~A <- ~H(j)[transposto]*~A*~H(j)
+        ~H <- ~H*~H(j)
+    }
+
+    // ~ indica matriz e ^ indica vetor

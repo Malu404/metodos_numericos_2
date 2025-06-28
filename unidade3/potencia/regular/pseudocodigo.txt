@@ -1,0 +1,13 @@
+(A,^x1) <- potenciaRegular(~M,^v0,epsilon)
+    ERRO <- 1
+    Anew <- 0
+    xold <- normalize(v0)
+    while (ERRO>epsilon)
+    {
+         Aold <- Anew
+         ^xnew <- ~A ^xold
+         Anew <- (^xold)[transposto] * ^xnew
+         ERRO <- abs((Anew-Aold)/Anew)
+         ^xold <- normalize(^xnew)
+    }
+    Return(Anew,^xnew)

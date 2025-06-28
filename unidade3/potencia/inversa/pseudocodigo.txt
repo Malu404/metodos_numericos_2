@@ -1,0 +1,27 @@
+//Versao que usa potenciaRegular
+(Àn, ^xn) <- potenciainversa(~A, ^v0, epsilon)
+{
+    ~M^-1 <- computeInversa(~A,n)
+    (A1[barrado], ~xn) <- potenciaRegular(~M^-1, ^v0, epsilon)
+    An <- 1/A1[barrado]
+    Return(An, ^xn)
+}
+
+
+//Versao que usa LU 
+
+(An,Xn) <- potenciainversaV1(~M, ^v0, epsilon)
+{
+    ERRO <- 1
+    Anew <- 0
+    ^xold <- normalize(^v0)
+    while (ERRO > epsilon)
+    {
+        Aold <- Anew
+        xnew <- LUSolver(L, U, xold)
+        Anew <- (^xold)[transposto] ^xnew
+        ERRO <- (Anew-Aold)/Anew
+        ~xold <- normalize(^xnew)
+    }
+}
+Return (1/Anew, ^xold)
