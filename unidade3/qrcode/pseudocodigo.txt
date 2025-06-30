@@ -1,0 +1,22 @@
+(Matriz, Matriz) decomposicaoQR (Matriz A, int n)
+Matriz QT, J+-, R!"#$, R#%&'$, R;
+// Inicializar matrizes
+QT ← I; // Esta matriz contém os produtos das matrizes ortogonais J+- (veja eq. (11))
+R#%&'$ ← A; // Na inicialização, R#%&'$ não tem a estrutura de uma matriz triangular superior
+Para j = 1 ... (n-1) faça // loop das colunas
+Para i = (j+1) ... (n) faça // loop das linhas
+// Construção da matriz de Jacobi J+-
+J+- ← matrizJacobiBaseadaNoElemento_ij_DeRvelha(R#%&'$, i, j, n);
+// Matriz modificada com elemento (i,j) zerado
+R!"#$ ← J+-R#%&'$;
+// Salvar para o próximo passo.
+R#%&'$ ← R!"#$;
+// Acumular o produto das matrizes de Jacobi como
+// QT ← J!(!/() ⋯ J!( ⋯ J1(J)(I
+QT ← J+-QT; // QT é a transposta de Q. Note a ordem do produto (eq. (11)).
+Fim Para
+Fim Para
+// No final do loop externo, o formato da matriz R!"#$ é triangular superior.
+Q ← Transposta(QT);
+R ← R!"#$;
+return (Q, R);

@@ -2,73 +2,12 @@
 #include <vector>
 #include <cmath>
 #include <iomanip>
-
+#include "../utilitarios.h"
 using namespace std;
 
 // Tipo para matrizes e vetores
 typedef vector<vector<double>> Matrix;
 typedef vector<double> Vector;
-
-// Função para calcular a norma de um vetor
-double norma(const Vector& v) {
-    double sum = 0.0;
-    for (double val : v) {
-        sum += val * val;
-    }
-    return sqrt(sum);
-}
-
-// Função para normalizar um vetor
-Vector normalize(const Vector& v) {
-    double norm = norma(v);
-    Vector normalized(v.size());
-    if (norm != 0) {
-        for (int i = 0; i < v.size(); i++) {
-            normalized[i] = v[i] / norm;
-        }
-    }
-    return normalized;
-}
-
-// Função para criar matriz identidade
-Matrix identidade(int n) {
-    Matrix I(n, Vector(n, 0.0));
-    for (int i = 0; i < n; i++) {
-        I[i][i] = 1.0;
-    }
-    return I;
-}
-
-// Função para multiplicar matrizes
-Matrix multiplicarMatrizes(const Matrix& A, const Matrix& B) {
-    int n = A.size();
-    int m = B[0].size();
-    int p = B.size();
-    
-    Matrix C(n, Vector(m, 0.0));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            for (int k = 0; k < p; k++) {
-                C[i][j] += A[i][k] * B[k][j];
-            }
-        }
-    }
-    return C;
-}
-
-// Função para transpor uma matriz
-Matrix transpor(const Matrix& A) {
-    int n = A.size();
-    int m = A[0].size();
-    Matrix At(m, Vector(n));
-    
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            At[j][i] = A[i][j];
-        }
-    }
-    return At;
-}
 
 // Função para criar matriz de Householder H(j)
 Matrix hausholder(const Matrix& A, int j, int n) {
