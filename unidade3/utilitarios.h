@@ -126,6 +126,23 @@ Matrix inversa(const Matrix& A) {
 
     return I;
 }
+//Função para subtrair matrizes
+Matrix subtrairmatrizes(const Matrix& A, const Matrix& B){ //adicionado hoje a tarde, testar em casa
+    int n = A.size();
+    Matrix resultado = identidade(n);
+    try{
+        for (int i = 0; i < n; ++i){
+            for (int j = 0; i<n; ++j){
+                resultado[i][j] = A[i][j]-B[i][j];
+            }
+        }
+        return resultado
+    }
+    catch(A.size() != B.size())
+    {
+        std::"Matrizes"<<A<<" e "<<B<<" de tamanho diferente, não subtrai"
+    }
+}
 
 // Função para calcular o método de potência regular
 pair<double, Vector> Regularparainversa(const Matrix& A, const Vector& v0, double epsilon) {
