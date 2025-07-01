@@ -8,11 +8,11 @@
 #include <utility>
 using namespace std;
 
-// Tipo para matrizes e vetores
+// o tipo pra matriz e vetor,ai so chama na funcao que tiver precisando
 typedef vector<vector<double>> Matrix;
 typedef vector<double> Vector;
 
-// Função para calcular a norma de um vetor
+//  diretamente dos confins de cg, normalize.
 double norma(const Vector& v) {
     double sum = 0.0;
     for (double val : v) {
@@ -21,7 +21,7 @@ double norma(const Vector& v) {
     return sqrt(sum);
 }
 
-// Função para normalizar um vetor
+// diretamente dos confins de cg, normalize.
 Vector normalize(const Vector& v) {
     double norm = norma(v);
     Vector normalized(v.size());
@@ -33,7 +33,7 @@ Vector normalize(const Vector& v) {
     return normalized;
 }
 
-// Função para criar matriz identidade
+// gera uma identidade do tamanho que eu precisar(o n na chamada da funcao)
 Matrix identidade(int n) {
     Matrix I(n, Vector(n, 0.0));
     for (int i = 0; i < n; i++) {
@@ -42,7 +42,7 @@ Matrix identidade(int n) {
     return I;
 }
 
-// Função para multiplicar matrizes
+// matrix x matrix, usa especialmente quando comeca com uma identidade e depois altera ela
 Matrix multiplicarMatrizes(const Matrix& A, const Matrix& B) {
     int n = A.size();
     int m = B[0].size();
@@ -59,7 +59,7 @@ Matrix multiplicarMatrizes(const Matrix& A, const Matrix& B) {
     return C;
 }
 
-// Função para multiplicar matriz por vetor
+// matriz x vetor, precisa disso na regular e na inversa
 Vector multiplicarMatrizVetor(const Matrix& A, const Vector& v) {
     int n = A.size();
     Vector resultado(n, 0.0);
@@ -72,7 +72,7 @@ Vector multiplicarMatrizVetor(const Matrix& A, const Vector& v) {
     return resultado;
 }
 
-// Função para transpor uma matriz
+// transposta da matriz
 Matrix transpor(const Matrix& A) {
     int n = A.size();
     int m = A[0].size();
@@ -85,7 +85,7 @@ Matrix transpor(const Matrix& A) {
     }
     return At;
 }
-
+//vetor x vetor
 double produtoescalar(const Vector& a, const Vector& b){
     double resultado = 0.0;
     for (size_t i = 0; i<a.size(); i++){
@@ -94,7 +94,7 @@ double produtoescalar(const Vector& a, const Vector& b){
     return resultado;
 }
 
-// Função para inverter uma matriz (Gauss-Jordan)
+// Precisa inverter na inversa(ta no nome ne) pra poder achar o menor autovalor, trouxe pra ca pra nao dar bloat no codigo
 Matrix inversa(const Matrix& A) {
     int n = A.size();
     Matrix I = identidade(n);
@@ -113,7 +113,7 @@ Matrix inversa(const Matrix& A) {
             I[i][j] /= diag;
         }
 
-        // Elimina os outros elementos da coluna
+        // Limpa outros elementos da coluna
         for (int k = 0; k < n; ++k) {
             if (k == i) continue;
             double fator = B[k][i];
@@ -126,31 +126,45 @@ Matrix inversa(const Matrix& A) {
 
     return I;
 }
-//Função para subtrair matrizes
-Matrix subtrairmatrizes(const Matrix& A, const Matrix& B){ //adicionado hoje a tarde, testar em casa
+//Matriz - Matriz, com um ifzinho so pra barrar de fazer uma operacao q nao pode fazer
+Matrix subtrairmatrizes(const Matrix& A, const Matrix& B) {
     int n = A.size();
-    Matrix resultado = identidade(n);
-    try{
-        for (int i = 0; i < n; ++i){
-            for (int j = 0; i<n; ++j){
-                resultado[i][j] = A[i][j]-B[i][j];
-            }
+    if (A.size() != B.size() || A[0].size() != B[0].size()) {
+        cerr << "Erro: Matrizes de tamanhos diferentes não podem ser subtraídas" << endl;
+        exit(1);
+    }
+    
+    Matrix resultado(n, Vector(A[0].size(), 0.0));
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < A[0].size(); ++j) {
+            resultado[i][j] = A[i][j] - B[i][j];
         }
-        return resultado
     }
-    catch(A.size() != B.size())
-    {
-        std::"Matrizes"<<A<<" e "<<B<<" de tamanho diferente, não subtrai"
-    }
+    return resultado;
 }
 
-// Função para calcular o método de potência regular
+// Matriz x escalar, precisa pra deslocamento (achar quem ta perto de 4, 10, 20 etc etce tc)
+Matrix multiplicarMatrizPorEscalar(const Matrix& A, double escalar) {
+    int n = A.size();
+    int m = A[0].size();
+    Matrix resultado(n, Vector(m, 0.0));
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            resultado[i][j] = A[i][j] * escalar;
+        }
+    }
+    return resultado;
+}
+
+// tive que colocar ela aqui pra poder usar ela na inversa e no deslocamento, ia ser so regular mas ai deu BO com a regular.cpp, entao virou regular pra inversa
 pair<double, Vector> Regularparainversa(const Matrix& A, const Vector& v0, double epsilon) {
     Vector vk_new = normalize(v0);
     Vector vk_old = v0;
     double lambda_new = 0.0;
     double lambda_old = 0.0;
     Vector x1;
+    int iteracoes = 0;
     
     do {
         vk_old = vk_new;
@@ -158,9 +172,15 @@ pair<double, Vector> Regularparainversa(const Matrix& A, const Vector& v0, doubl
         lambda_old = lambda_new;
         lambda_new = produtoescalar(x1, vk_old);
         vk_new = normalize(x1);
+        iteracoes++;
+        
+        if (iteracoes > 10000) {
+            cerr << "Aviso: Máximo de iterações atingido na potência!" << endl;
+            break;
+        }
     } while (fabs(lambda_new - lambda_old) > epsilon);
     
-    return{lambda_new,vk_new};
+    return {lambda_new, vk_new};
 }
 
 #endif // UTILITARIOS_H

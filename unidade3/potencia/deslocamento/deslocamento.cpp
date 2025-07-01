@@ -4,10 +4,60 @@
 #include <iomanip>
 #include <limits>
 #include "../../utilitarios.h"
+
 using namespace std;
+
 // Função para calcular o método de deslocamento
-void deslocamento(const Matrix& A, Vector& v0, double epsilon, double deslocamento){
+pair<double, Vector> deslocamento(const Matrix& A, const Vector& v0, double epsilon, double shift) {
     int n = A.size();
-    matriz I = identidade(n);
-    A = A - I*deslocamento;
+    Matrix I = identidade(n);
+    
+    // Calcula A - shift*I
+    Matrix Aa = subtrairmatrizes(A, multiplicarMatrizPorEscalar(I, shift));
+    
+    // Aplica potência inversa em (A - shift*I)
+    Matrix Ainv = inversa(Aa);
+    auto [lambda_dom_inversa, v_dom_inversa] = Regularparainversa(Ainv, v0, epsilon);
+    
+    // λ original = 1/λ_dominante + shift
+    double lambda_deslocamento = 1.0 / lambda_dom_inversa + shift;
+    Vector vec_deslocamento = v_dom_inversa;
+    
+    // Imprimir resultados
+    cout << fixed << setprecision(6);
+    cout << "Autovalor mais próximo de " << shift << " (metodo do deslocamento): " << lambda_deslocamento << endl;
+    cout << "Autovetor correspondente: ";
+    for (double val : vec_deslocamento) {
+        cout << val << " ";
+    }
+    cout << endl;
+    
+    return {lambda_deslocamento, vec_deslocamento};
+}
+
+int main() {
+    Matrix A = {
+        {5.0, 2.0, 1.0},
+        {2.0, 3.0, 1.0},
+        {1.0, 1.0, 1.0}
+    };//λ1: 0.57637\dots ,\:λ2:1.84653 ,\:λ3:6.57708
+    Matrix B = {
+        {-2.7083, -2.6824, 0.4543},
+        {0.1913, 0.7269, 0.1007},
+        {-0.3235, -0.4052, 5.0453}
+    };
+    Matrix C = {
+    {40, 8, 4, 2, 1},
+    {8, 30, 12, 6, 2},
+    {4, 12, 20, 1, 2},
+    {2, 6, 1, 25, 4},
+    {1, 2, 2, 4, 5}
+    };//λ\approx \:4.01488\dots ,\:λ\approx \:11.64242\dots ,\:λ\approx \:23.64807\dots ,\:λ\approx \:31.31146\dots ,\:λ\approx \:49.38314\dots 
+    Vector v0 = {1, 1, 1}; // Vetor inicial pra usar em A e B
+    Vector v1 = {1, 1, 1, 1, 1}; // Vetor inicial para C
+    double epsilon = 1e-6;
+    double shift = 48.0; // Valor do deslocamento
+
+    deslocamento(C, v1, epsilon, shift);
+    return 0;
 }

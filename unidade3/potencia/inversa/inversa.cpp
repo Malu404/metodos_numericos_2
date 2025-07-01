@@ -19,7 +19,7 @@ void potenciaInversa(const Matrix& A, const Vector& v0, double epsilon) {
     Vector xn = v_dom_inversa;
 
     // Step 5: Imprimir
-    cout << fixed << setprecision(6);
+    cout << fixed << setprecision(4);
     cout << "Autovalor mais proximo de zero (metodo da potencia inversa): " << lambda_n << endl;
     cout << "Autovetor correspondente: ";
     for (double val : xn) {
@@ -32,11 +32,23 @@ int main() {
         {5.0, 2.0, 1.0},
         {2.0, 3.0, 1.0},
         {1.0, 1.0, 1.0}
+    };//λ1: 0.57637\dots ,\:λ2:1.84653 ,\:λ3:6.57708
+    Matrix B = {
+        {-2.7083, -2.6824, 0.4543},
+        {0.1913, 0.7269, 0.1007},
+        {-0.3235, -0.4052, 5.0453}
     };
+    Matrix C = {
+    {40, 8, 4, 2, 1},
+    {8, 30, 12, 6, 2},
+    {4, 12, 20, 1, 2},
+    {2, 6, 1, 25, 4},
+    {1, 2, 2, 4, 5}
+    };//λ\approx \:4.01488\dots ,\:λ\approx \:11.64242\dots ,\:λ\approx \:23.64807\dots ,\:λ\approx \:31.31146\dots ,\:λ\approx \:49.38314\dots 
+    Vector v0 = {1, 1, 1}; // Vetor inicial pra usar em A e B
+    Vector v1 = {1, 1, 1, 1, 1}; // Vetor inicial para C
+    double epsilon = 1e-6;
 
-    Vector v0 = {0.4, 3, 2};
-    double epsilon = 1e-60;
-
-    potenciaInversa(A, v0, epsilon);
+    potenciaInversa(C, v1, epsilon);
     return 0;
 }
