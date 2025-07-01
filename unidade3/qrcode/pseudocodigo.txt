@@ -20,3 +20,33 @@ Fim Para
 Q ← Transposta(QT);
 R ← R!"#$;
 return (Q, R);
+
+~A, ~X <- MétodoQr(~T, ~H, n, epsilon)
+    ~X <- ~H 
+    ERRO <- 1
+    ~A <- ~T    
+    while ERRO>epsilon
+        ~Q,~R <- decompQR(~A)
+        ~A <- ~R~Q
+        ~X <= ~X~Q
+        ERRO = Somatorio(n-1)j=1 Somatorio(n)i=j+1 |A[i][j]|
+    return(~A,~X)
+
+~Q, ~R <- decompQR(~A)
+~Q <- ~I 
+    j=1: (n-1)
+        x = A[j][j]
+        y = A[j+1][j]
+        r = (x²+y²)^1/2
+        c = x/r 
+        s = -y/r 
+        ~Q[j] <- ~I 
+        Q[j][j] <- c 
+        Q[j+1][j+1] <-c 
+        Q[j+1][j] <- s
+        Q[j][j+1] <- -s 
+        A[barrado] <- Qj, ~A
+        ~Q <- ~Q ~Q[j]
+        A <- A[barrado]
+    R <- A 
+return(~Q,~R)
