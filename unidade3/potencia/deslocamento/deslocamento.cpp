@@ -7,23 +7,23 @@
 
 using namespace std;
 
-// Função para calcular o método de deslocamento
+// funcao do deslocamento
 pair<double, Vector> deslocamento(const Matrix& A, const Vector& v0, double epsilon, double shift) {
     int n = A.size();
     Matrix I = identidade(n);
     
-    // Calcula A - shift*I
+    // calculo minha matriz depois de contar com o shift do deslocamento
     Matrix Aa = subtrairmatrizes(A, multiplicarMatrizPorEscalar(I, shift));
     
-    // Aplica potência inversa em (A - shift*I)
+    // depois aplico a potencia inversa em Aa
     Matrix Ainv = inversa(Aa);
     auto [lambda_dom_inversa, v_dom_inversa] = Regularparainversa(Ainv, v0, epsilon);
     
-    // λ original = 1/λ_dominante + shift
+    // como eu inverti a matriz, desinverto o autovalor e adiciono o shift
     double lambda_deslocamento = 1.0 / lambda_dom_inversa + shift;
     Vector vec_deslocamento = v_dom_inversa;
     
-    // Imprimir resultados
+    // print
     cout << fixed << setprecision(6);
     cout << "Autovalor mais próximo de " << shift << " (metodo do deslocamento): " << lambda_deslocamento << endl;
     cout << "Autovetor correspondente: ";
@@ -35,7 +35,7 @@ pair<double, Vector> deslocamento(const Matrix& A, const Vector& v0, double epsi
     return {lambda_deslocamento, vec_deslocamento};
 }
 
-int main() {
+int main() {//valores que eu calculei pelo matrixcalc
     Matrix A = {
         {5.0, 2.0, 1.0},
         {2.0, 3.0, 1.0},

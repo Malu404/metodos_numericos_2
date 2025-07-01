@@ -8,17 +8,17 @@
 using namespace std;
 
 void potenciaInversa(const Matrix& A, const Vector& v0, double epsilon) {
-    // Step 1: Inversão da matriz
+    // ta no nome, comeca com inversao da matriz
     Matrix Ainv = inversa(A);
 
-    // Step 2: Aplica método da potência regular sobre A⁻¹
+    //como dito no pseucodigo, posso jogar minha matriz inversa direto na funcao Regularparainversa
     auto [lambda_dom_inversa, v_dom_inversa] = Regularparainversa(Ainv, v0, epsilon);
     
-    // Step 3 e 4: λn = 1 / λdominante, xn = xdominante
+    // agora desinverto meu lambda, pois ele vem invertido por causa da matriz inversa
     double lambda_n = 1.0 / lambda_dom_inversa;
     Vector xn = v_dom_inversa;
 
-    // Step 5: Imprimir
+    // print 
     cout << fixed << setprecision(4);
     cout << "Autovalor mais proximo de zero (metodo da potencia inversa): " << lambda_n << endl;
     cout << "Autovetor correspondente: ";
@@ -27,7 +27,7 @@ void potenciaInversa(const Matrix& A, const Vector& v0, double epsilon) {
     }
     cout << endl;
 }
-int main() {
+int main() {//valores que eu calculei pelo matrixcalc
     Matrix A = {
         {5.0, 2.0, 1.0},
         {2.0, 3.0, 1.0},

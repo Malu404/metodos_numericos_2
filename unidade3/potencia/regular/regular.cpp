@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// Função para calcular o método de potência regular
+// calcula os autovalor e autovetor pelo metodo da potencia regular
 pair<double, Vector> Regular(const Matrix& A, const Vector& v0, double epsilon){
     Vector vk_new = normalize(v0);
     Vector vk_old = v0;
@@ -23,19 +23,19 @@ pair<double, Vector> Regular(const Matrix& A, const Vector& v0, double epsilon){
         vk_new = normalize(x1);
         iteracoes++;
         
-        // Debug: mostrar convergência
+        // contador de iteracoes
         if (iteracoes % 100 == 0) {
-            cout << "Iteraçao " << iteracoes << ": λ = " << lambda_new << ", diferença = " << fabs(lambda_new - lambda_old) << endl;
+            cout << "Iteracao " << iteracoes << ": λ = " << lambda_new << ", diferença = " << fabs(lambda_new - lambda_old) << endl;
         }
         
         if (iteracoes > 10000) {
-            cout << "Aviso: Maximo de iterações atingido!" << endl;
+            cout << "Aviso: Maximo de iteracoes atingido!" << endl;
             break;
         }
     } while (fabs(lambda_new - lambda_old) > epsilon);
     
     cout << fixed << setprecision(6);
-    cout << "Autovalor dominante: " << lambda_new << " (apos " << iteracoes << " iterações)" << endl;
+    cout << "Autovalor dominante: " << lambda_new << " (apos " << iteracoes << " iteracoes)" << endl;
     cout << "Autovetor dominante: ";
     for (double val : vk_new) {
         cout << val << " ";
@@ -44,7 +44,7 @@ pair<double, Vector> Regular(const Matrix& A, const Vector& v0, double epsilon){
     
     return {lambda_new, vk_new};
 }
-int main() {
+int main() {//valores que eu calculei pelo matrixcalc
     Matrix A = {
         {5.0, 2.0, 1.0},
         {2.0, 3.0, 1.0},
@@ -69,7 +69,7 @@ int main() {
     cout << "=== Testando matriz B ===" << endl;
     auto [lambdab, vetorb] = Regular(B, v0, epsilon);
     cout << "=== Testando matriz C ===" << endl;
-    auto [lambdac, vetorc] = Regular(C, v0, epsilon);
+    auto [lambdac, vetorc] = Regular(C, v1, epsilon);
     // Verificação: A*v deve ser aproximadamente λ*v
     Vector Av = multiplicarMatrizVetor(C, vetorc);
     cout << "\nVerificação (A*v): ";

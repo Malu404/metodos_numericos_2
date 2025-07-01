@@ -11,7 +11,7 @@ typedef vector<double> Vector;
 
 // Função para criar matriz de Householder H(j)
 Matrix hausholder(const Matrix& A, int j, int n) {
-    // Criar vetor v inicializado com zeros
+    // comeco com meu vetor de zeros
     Vector v(n, 0.0);
     Vector v_linha(n, 0.0);
     
@@ -20,7 +20,7 @@ Matrix hausholder(const Matrix& A, int j, int n) {
         v[i] = A[i][j];
     }
     
-    // Lv <- norma(v)
+    // normalizo meu vetor
     double Lv = norma(v);
     
     // v'(j+1) <- Lv
@@ -35,9 +35,9 @@ Matrix hausholder(const Matrix& A, int j, int n) {
     // n <- normalize(N)
     Vector n_normalizado = normalize(N);
     
-    // Construir matriz de Householder H = I - 2*n*n^T
+    //Tendo em mente que a matriz HH e :  H = I - 2*n*n^T , inicializo com identidade
     Matrix H = identidade(n);
-    
+    //depois tiro o 2*n*n^T de H
     for (int i = 0; i < n; i++) {
         for (int k = 0; k < n; k++) {
             H[i][k] -= 2.0 * n_normalizado[i] * n_normalizado[k];
@@ -47,7 +47,7 @@ Matrix hausholder(const Matrix& A, int j, int n) {
     return H;
 }
 
-// Função principal para múltiplas transformações de Householder
+//funcao para as transformacoes de hausholder
 pair<Matrix, Matrix> mhausholder(Matrix A, int n) {
     Matrix H = identidade(n);
     
@@ -68,7 +68,7 @@ pair<Matrix, Matrix> mhausholder(Matrix A, int n) {
     return make_pair(A, H);
 }
 
-// Função para imprimir uma matriz
+// print
 void imprimirMatriz(const Matrix& mat, const string& nome) {
     cout << nome << ":" << endl;
     for (const auto& linha : mat) {
@@ -80,7 +80,7 @@ void imprimirMatriz(const Matrix& mat, const string& nome) {
     cout << endl;
 }
 
-int main() {
+int main() {// inserir uma matriz aqui, de preferencia as que eu ja usei nos metodos anteriores pq ja tenho elas calculadas
     // Exemplo de uso
     int n;
     cout << "Digite o tamanho da matriz: ";
@@ -99,7 +99,7 @@ int main() {
     cout << "\nMatriz original:" << endl;
     imprimirMatriz(A, "A");
     
-    // Aplicar transformações de Householder
+    // aplicar transformacoes HH
     pair<Matrix, Matrix> resultado = mhausholder(A, n);
     Matrix T = resultado.first;  // Matriz tridiagonalizada
     Matrix H = resultado.second; // Matriz de transformação acumulada
