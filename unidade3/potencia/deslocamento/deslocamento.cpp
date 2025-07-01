@@ -25,7 +25,7 @@ pair<double, Vector> deslocamento(const Matrix& A, const Vector& v0, double epsi
     
     // print
     cout << fixed << setprecision(6);
-    cout << "Autovalor mais próximo de " << shift << " (metodo do deslocamento): " << lambda_deslocamento << endl;
+    cout << "Autovalor mais proximo de " << shift << " (metodo do deslocamento): " << lambda_deslocamento << endl;
     cout << "Autovetor correspondente: ";
     for (double val : vec_deslocamento) {
         cout << val << " ";
