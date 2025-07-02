@@ -103,7 +103,7 @@ Matrix inversa(const Matrix& A) {
     for (int i = 0; i < n; ++i) {
         double diag = B[i][i];
         if (fabs(diag) < 1e-10) {
-            cerr << "Erro: pivo zero na inversão" << endl;
+            cerr << "Erro: pivo zero na inversao" << endl;
             exit(1);
         }
 
@@ -130,7 +130,7 @@ Matrix inversa(const Matrix& A) {
 Matrix subtrairmatrizes(const Matrix& A, const Matrix& B) {
     int n = A.size();
     if (A.size() != B.size() || A[0].size() != B[0].size()) {
-        cerr << "Erro: Matrizes de tamanhos diferentes não podem ser subtraídas" << endl;
+        cerr << "Erro: Matrizes de tamanhos diferentes nao podem ser subtraidas" << endl;
         exit(1);
     }
     
@@ -175,7 +175,7 @@ pair<double, Vector> Regularparainversa(const Matrix& A, const Vector& v0, doubl
         iteracoes++;
         
         if (iteracoes > 10000) {
-            cerr << "Aviso: Máximo de iterações atingido na potência!" << endl;
+            cerr << "Aviso: Maximo de iteracoes atingido na potencia!" << endl;
             break;
         }
     } while (fabs(lambda_new - lambda_old) > epsilon);

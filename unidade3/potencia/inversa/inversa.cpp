@@ -28,6 +28,15 @@ void potenciaInversa(const Matrix& A, const Vector& v0, double epsilon) {
     cout << endl;
 }
 int main() {//valores que eu calculei pelo matrixcalc
+     // Matriz B (diagonal), associada ao problema generalizado Ax = lambda*Bx
+       Matrix B = {
+        {2, 0, 0, 0, 0},
+        {0, 3, 0, 0, 0},
+        {0, 0, 4, 0, 0},
+        {0, 0, 0, 5, 0},
+        {0, 0, 0, 0, 6}
+    };
+
     Matrix A = {
         {5.0, 2.0, 1.0},
         {2.0, 3.0, 1.0},
@@ -50,5 +59,22 @@ int main() {//valores que eu calculei pelo matrixcalc
     double epsilon = 1e-6;
 
     potenciaInversa(C, v1, epsilon);
+
+    Matrix Cinv = inversa(C);
+    auto [lambda_inv, x] = Regularparainversa(Cinv, v1, epsilon);
+    double lambda = 1.0 / lambda_inv;
+
+    // Verificacao: A * x ~ lambda * B * x
+    cout << "\n~~ Verificacao: A * x ~ lambda * B * x ~~" << endl;
+    Vector Ax = multiplicarMatrizVetor(A, x);
+    Vector Bx = multiplicarMatrizVetor(B, x);
+
+    cout << fixed << setprecision(6);
+    cout << "A*x:          ";
+    for (double val : Ax) cout << val << " ";
+    cout << "\nlambda*B*x:   ";
+    for (double val : Bx) cout << lambda * val << " ";
+    cout << endl;
+
     return 0;
 }

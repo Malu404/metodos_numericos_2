@@ -25,7 +25,7 @@ pair<double, Vector> Regular(const Matrix& A, const Vector& v0, double epsilon){
         
         // contador de iteracoes
         if (iteracoes % 100 == 0) {
-            cout << "Iteracao " << iteracoes << ": λ = " << lambda_new << ", diferença = " << fabs(lambda_new - lambda_old) << endl;
+            cout << "Iteracao " << iteracoes << ": lambda = " << lambda_new << ", diferenca = " << fabs(lambda_new - lambda_old) << endl;
         }
         
         if (iteracoes > 10000) {
@@ -45,30 +45,29 @@ pair<double, Vector> Regular(const Matrix& A, const Vector& v0, double epsilon){
     return {lambda_new, vk_new};
 }
 int main() {//valores que eu calculei pelo matrixcalc
-    Matrix A = {
-        {5.0, 2.0, 1.0},
-        {2.0, 3.0, 1.0},
-        {1.0, 1.0, 1.0}
-    };//λ1: 0.57637\dots ,\:λ2:1.84653 ,\:λ3:6.57708
-    Matrix B = {
-        {-2.7083, -2.6824, 0.4543},
-        {0.1913, 0.7269, 0.1007},
-        {-0.3235, -0.4052, 5.0453}
+      Matrix B = {
+        {2, 0, 0, 0, 0},
+        {0, 3, 0, 0, 0},
+        {0, 0, 4, 0, 0},
+        {0, 0, 0, 5, 0},
+        {0, 0, 0, 0, 6}
     };
-    Matrix C = {
-    {40, 8, 4, 2, 1},
-    {8, 30, 12, 6, 2},
-    {4, 12, 20, 1, 2},
-    {2, 6, 1, 25, 4},
-    {1, 2, 2, 4, 5}
-    };//λ\approx \:4.01488\dots ,\:λ\approx \:11.64242\dots ,\:λ\approx \:23.64807\dots ,\:λ\approx \:31.31146\dots ,\:λ\approx \:49.38314\dots 
-    Vector v0 = {1, 1, 1}; // Vetor inicial pra usar em A e B
-    Vector v1 = {1, 1, 1, 1, 1}; // Vetor inicial para C
-    double epsilon = 1e-6;
 
-    cout << "=== Testando matriz B ===" << endl;
-    auto [lambdab, vetorb] = Regular(B, v0, epsilon);
-    cout << "=== Testando matriz C ===" << endl;
+    Matrix A = {
+        {8, 4, 2, 6, 10},
+        {6, 27, 9, 21, 24},
+        {4, 12, 44, 24, 16},
+        {15, 35, 30, 70, 35},
+        {30, 48, 24, 42, 60}
+    };
+
+    Vector v1 = {1, 1, 1, 1, 1};
+    double epsilon = 1e-6;
+    Matrix Binv = inversa(B);
+    Matrix C = multiplicarMatrizes(Binv, A);
+    //cout << "~~ Testando matriz B ~~" << endl;
+    //auto [lambdab, vetorb] = Regular(Binv, v1, epsilon);
+    cout << "~~ Testando matriz C ~~" << endl;
     auto [lambdac, vetorc] = Regular(C, v1, epsilon);
     // Verificação: A*v deve ser aproximadamente λ*v
     Vector Av = multiplicarMatrizVetor(C, vetorc);
@@ -81,8 +80,7 @@ int main() {//valores que eu calculei pelo matrixcalc
         cout << lambdac * val << " ";
     }
     cout << endl;
-    
+
     return 0;
 }
-
     

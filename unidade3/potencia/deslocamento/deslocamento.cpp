@@ -36,28 +36,51 @@ pair<double, Vector> deslocamento(const Matrix& A, const Vector& v0, double epsi
 }
 
 int main() {//valores que eu calculei pelo matrixcalc
-    Matrix A = {
-        {5.0, 2.0, 1.0},
-        {2.0, 3.0, 1.0},
-        {1.0, 1.0, 1.0}
-    };//λ1: 0.57637\dots ,\:λ2:1.84653 ,\:λ3:6.57708
-    Matrix B = {
-        {-2.7083, -2.6824, 0.4543},
-        {0.1913, 0.7269, 0.1007},
-        {-0.3235, -0.4052, 5.0453}
+   Matrix B = {
+        {2, 0, 0, 0, 0},
+        {0, 3, 0, 0, 0},
+        {0, 0, 4, 0, 0},
+        {0, 0, 0, 5, 0},
+        {0, 0, 0, 0, 6}
     };
-    Matrix C = {
-    {40, 8, 4, 2, 1},
-    {8, 30, 12, 6, 2},
-    {4, 12, 20, 1, 2},
-    {2, 6, 1, 25, 4},
-    {1, 2, 2, 4, 5}
-    };//λ\approx \:4.01488\dots ,\:λ\approx \:11.64242\dots ,\:λ\approx \:23.64807\dots ,\:λ\approx \:31.31146\dots ,\:λ\approx \:49.38314\dots 
-    Vector v0 = {1, 1, 1}; // Vetor inicial pra usar em A e B
-    Vector v1 = {1, 1, 1, 1, 1}; // Vetor inicial para C
-    double epsilon = 1e-6;
-    double shift = 48.0; // Valor do deslocamento
 
-    deslocamento(C, v1, epsilon, shift);
+    // Matriz A do problema
+    Matrix prova = {
+        {8, 4, 2, 6, 10},
+        {6, 27, 9, 21, 24},
+        {4, 12, 44, 24, 16},
+        {15, 35, 30, 70, 35},
+        {30, 48, 24, 42, 60}
+    };
+
+    Vector v1 = {1, 1, 1, 1, 1};
+    double epsilon = 1e-6;
+    double shift = 20.0; // valor alvo aproximado do autovalor
+
+    // Transformacao do problema generalizado: C = B^(-1) * A
+    Matrix Binv = inversa(B);
+    Matrix C = multiplicarMatrizes(Binv, prova);
+
+    cout << "~~ Metodo da Potencia com Deslocamento ~~" << endl;
+    auto [lambda_dominante, vetor_dominante] = deslocamento(C, v1, epsilon, shift);
+
+    // ~~~~~~~~~~~~~~~~~~~~=
+    // Verificacao: A * x ~ lambda * B * x
+    // ~~~~~~~~~~~~~~~~~~~~=
+    cout << "\n~~ Verificacao: A * x ~ lambda * B * x ~~" << endl;
+
+    Vector Ax = multiplicarMatrizVetor(prova, vetor_dominante);
+    Vector Bx = multiplicarMatrizVetor(B, vetor_dominante);
+
+    cout << "A*x:          ";
+    for (double val : Ax) {
+        cout << val << " ";
+    }
+    cout << "\nlambda*B*x:   ";
+    for (double val : Bx) {
+        cout << lambda_dominante * val << " ";
+    }
+    cout << endl;
+
     return 0;
 }

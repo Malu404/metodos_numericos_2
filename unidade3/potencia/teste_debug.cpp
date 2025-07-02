@@ -8,7 +8,7 @@ using namespace std;
 
 // Função melhorada para debug
 pair<double, Vector> potenciaDebug(const Matrix& A, const Vector& v0, double epsilon, string nome) {
-    cout << "\n=== " << nome << " ===" << endl;
+    cout << "\n~~ " << nome << " ~~" << endl;
     
     Vector vk = normalize(v0);
     double lambda_old = 0.0;
@@ -74,7 +74,7 @@ int main() {
     auto [lambda_dom, v_dom] = potenciaDebug(B, v0, epsilon, "Potência Regular");
     
     // Teste potência inversa  
-    cout << "\n=== Calculando Inversa ===" << endl;
+    cout << "\n~~ Calculando Inversa ~~" << endl;
     Matrix B_inv = inversa(B);
     auto [lambda_inv, v_inv] = potenciaDebug(B_inv, v0, epsilon, "Potência na Inversa");
     
